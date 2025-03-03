@@ -1,0 +1,112 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: index.php");
+    exit();
+}
+
+$configFile = __DIR__ . "/config_discord.ini";
+$pythonScript = __DIR__ . "/mta_log_monitor.py";
+$pythonProcess = "mta_log_monitor.py";
+$logFile = __DIR__ . "/mta_log_monitor.log";
+
+// Verificar si config_discord.ini existe
+if (!file_exists($configFile)) {
+    die("<div class='alert alert-danger'>Error: config_discord.ini no encontrado. Verifique la ubicación.</div>");
+}
+
+// Asegurar que el archivo config_discord.ini está en UTF-8 sin BOM
+$content = file_get_contents($configFile);
+if (substr($content, 0, 3) === "\xEF\xBB\xBF") {
+    file_put_contents($configFile, substr($content, 3));
+}
+
+// Verificar si config_discord.ini tiene formato correcto
+$config = @parse_ini_file($configFile);
+if ($config === false) {
+    die("<div class='alert alert-danger'>Error: No se pudo leer config_discord.ini. Asegúrese de que tenga la sintaxis correcta y esté en formato UTF-8 sin BOM.</div>");
+}
+
+// Guardar cambios en config_discord.ini
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_config'])) {
+    $newConfig = "[SETTINGS]\n";
+    foreach ($_POST as $key => $value) {
+        if ($key !== 'save_config') {
+            $newConfig .= "$key=\"" . addslashes($value) . "\"\n";
+        }
+    }
+    file_put_contents($configFile, $newConfig);
+    $message = "<div class='alert alert-success'>Configuración guardada correctamente.</div>";
+}
+
+// Verificar si el script de Python está en ejecución
+function isPythonRunning($processName) {
+    $output = shell_exec("tasklist /FI \"IMAGENAME eq python.exe\"");
+    return strpos($output, $processName) !== false;
+}
+
+$pythonStatus = isPythonRunning($pythonProcess) ? "Online" : "Offline";
+$pythonStatusClass = $pythonStatus === "Online" ? "bg-success" : "bg-danger";
+
+// Iniciar script Python
+if (isset($_POST['start_python'])) {
+    shell_exec("start /B python \"$pythonScript\"");
+    header("Refresh:0");
+}
+
+// Detener script Python
+if (isset($_POST['stop_python'])) {
+    shell_exec("taskkill /IM python.exe /F");
+    header("Refresh:0");
+}
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión del Bot de Discord</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <?php include 'header.php'; ?>
+    <div class="container mt-4">
+        <h2>Gestión del Bot de Discord</h2>
+        <?php if (isset($message)) echo $message; ?>
+
+        <div class="card mb-3">
+            <div class="card-header">Estado del Script</div>
+            <div class="card-body">
+                <p><strong>Estado:</strong> <span class="badge <?php echo $pythonStatusClass; ?>"> <?php echo $pythonStatus; ?> </span></p>
+                <form method="post">
+                    <button type="submit" name="start_python" class="btn btn-success">Iniciar Script</button>
+                    <button type="submit" name="stop_python" class="btn btn-danger">Detener Script</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">Editar Configuración</div>
+            <div class="card-body">
+                <form method="post">
+                    <?php foreach ($config as $key => $value) { ?>
+                        <div class="mb-3">
+                            <label class="form-label"><?php echo strtoupper($key); ?>:</label>
+                            <input type="text" class="form-control" name="<?php echo $key; ?>" value="<?php echo htmlspecialchars($value); ?>">
+                        </div>
+                    <?php } ?>
+                    <button type="submit" name="save_config" class="btn btn-primary">Guardar Cambios</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Salida del Script Python</div>
+            <div class="card-body bg-dark text-light" style="height: 300px; overflow-y: scroll;">
+                <pre><?php echo file_exists($logFile) ? htmlspecialchars(file_get_contents($logFile)) : "Log no encontrado."; ?></pre>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
