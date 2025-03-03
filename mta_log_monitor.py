@@ -1,65 +1,96 @@
 import time
 import requests
+import os
 import configparser
 
-def read_config():
-    config = configparser.ConfigParser()
-    config.read("config_discord.php")
-    return {
-        "discord_webhook": config.get("SETTINGS", "discord_webhook", fallback=""),
-        "server_start": config.get("SETTINGS", "server_start", fallback="Server started and is ready to accept connections!"),
-        "server_join": config.get("SETTINGS", "server_join", fallback="{PLAYER} ({IP}) ha ingresado al servidor"),
-        "server_leave": config.get("SETTINGS", "server_leave", fallback="{PLAYER} ha salido del servidor"),
-        "server_chat": config.get("SETTINGS", "server_chat", fallback="{PLAYER}: {MESSAGE}"),
-    }
+# Ruta de configuración y log
+CONFIG_FILE_PATH = "config_discord.ini"
+LOG_FILE_PATH = "C:/Games/mta/mods/deathmatch/logs/server.log"
 
-def send_discord_message(webhook_url, message):
-    if webhook_url:
-        data = {"content": message}
-        requests.post(webhook_url, json=data)
-    else:
-        print("[Error] Webhook de Discord no configurado.")
+# Verificar si config_discord.ini existe
+if not os.path.exists(CONFIG_FILE_PATH):
+    print("Error: El archivo config_discord.ini no existe en el directorio.")
+    exit()
 
-def monitor_log(log_file, config):
-    with open(log_file, "r", encoding="utf-8") as file:
-        file.seek(0, 2)  # Ir al final del archivo
+# Cargar configuración
+config = configparser.ConfigParser()
+config.read(CONFIG_FILE_PATH, encoding="utf-8")
+
+DISCORD_WEBHOOK = config.get("SETTINGS", "discord_webhook", fallback=None)
+SERVER_START_MSG = config.get("SETTINGS", "server_start", fallback="Servidor iniciado!")
+SERVER_JOIN_MSG = config.get("SETTINGS", "server_join", fallback="El jugador {PLAYER} ({IP}) ha ingresado.")
+SERVER_LEAVE_MSG = config.get("SETTINGS", "server_leave", fallback="El jugador {PLAYER} ha salido.")
+SERVER_CHAT_MSG = config.get("SETTINGS", "server_chat", fallback="{PLAYER}: {MESSAGE}")
+
+# Verificar si el archivo de log existe
+if not os.path.exists(LOG_FILE_PATH):
+    print("Error: El archivo de log no existe en la ruta especificada.")
+    exit()
+
+# Verificar la disponibilidad del webhook de Discord
+def check_discord_webhook():
+    try:
+        response = requests.get(DISCORD_WEBHOOK)
+        if response.status_code == 200:
+            print("[WEBHOOK] Webhook de Discord está operativo.")
+        else:
+            print("[ERROR] Webhook de Discord no está accesible. Código:", response.status_code)
+            exit()
+    except requests.exceptions.RequestException as e:
+        print("[ERROR] No se pudo conectar al Webhook de Discord:", e)
+        exit()
+
+def send_to_discord(message):
+    if DISCORD_WEBHOOK:
+        payload = {"content": message}
+        try:
+            requests.post(DISCORD_WEBHOOK, json=payload)
+        except Exception as e:
+            print(f"Error al enviar mensaje a Discord: {e}")
+
+def monitor_log():
+    with open(LOG_FILE_PATH, "r", encoding="utf-8") as file:
+        file.seek(0, os.SEEK_END)  # Ir al final del archivo
         while True:
             line = file.readline()
             if not line:
                 time.sleep(1)
                 continue
             
-            # Verificar si el servidor ha iniciado
-            if config["server_start"] in line:
-                send_discord_message(config["discord_webhook"], config["server_start"])
+            line = line.strip()
             
-            # Verificar si un jugador ha ingresado
-            if "JOIN:" in line:
-                parts = line.split("JOIN:")[-1].strip().split(" ")
-                if len(parts) > 2:
-                    player_name = parts[0]
-                    player_ip = parts[-1].replace("(IP:", "").replace(")", "")
-                    join_message = config["server_join"].replace("{PLAYER}", player_name).replace("{IP}", player_ip)
-                    send_discord_message(config["discord_webhook"], join_message)
+            if "Server started and is ready to accept connections!" in line:
+                send_to_discord(SERVER_START_MSG)
             
-            # Verificar si un jugador ha salido
-            if "QUIT:" in line:
-                parts = line.split("QUIT:")[-1].strip().split(" ")
+            elif "JOIN:" in line:
+                parts = line.split("JOIN: ")
                 if len(parts) > 1:
-                    player_name = parts[0]
-                    leave_message = config["server_leave"].replace("{PLAYER}", player_name)
-                    send_discord_message(config["discord_webhook"], leave_message)
+                    player_info = parts[1].split(" ")
+                    player_name = player_info[0]
+                    player_ip = player_info[-1].replace("(IP: ", "").replace(")", "")
+                    send_to_discord(SERVER_JOIN_MSG.replace("{PLAYER}", player_name).replace("{IP}", player_ip))
             
-            # Verificar si un jugador ha enviado un mensaje en el chat
-            if "CHAT:" in line:
-                parts = line.split("CHAT:")[-1].strip().split(": ", 1)
-                if len(parts) == 2:
-                    player_name = parts[0]
-                    message_text = parts[1]
-                    chat_message = config["server_chat"].replace("{PLAYER}", player_name).replace("{MESSAGE}", message_text)
-                    send_discord_message(config["discord_webhook"], chat_message)
+            elif "QUIT:" in line:
+                parts = line.split("QUIT: ")
+                if len(parts) > 1:
+                    player_name = parts[1].split(" ")[0]
+                    send_to_discord(SERVER_LEAVE_MSG.replace("{PLAYER}", player_name))
+            
+            elif "CHAT:" in line:
+                parts = line.split("CHAT: ")
+                if len(parts) > 1:
+                    chat_parts = parts[1].split(": ", 1)
+                    if len(chat_parts) > 1:
+                        player_name, message = chat_parts
+                        send_to_discord(SERVER_CHAT_MSG.replace("{PLAYER}", player_name).replace("{MESSAGE}", message))
 
 if __name__ == "__main__":
-    log_path = "C:/Games/mta/mods/deathmatch/logs/server.log"
-    config = read_config()
-    monitor_log(log_path, config)
+    try:
+        print("[LOG MONITOR] Verificando dependencias...")
+        check_discord_webhook()
+        print("[LOG MONITOR] Iniciando monitoreo del servidor MTA...")
+        monitor_log()
+    except Exception as e:
+        with open("error_log.txt", "w", encoding="utf-8") as f:
+            f.write(f"Error detectado: {str(e)}\n")
+

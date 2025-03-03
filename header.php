@@ -30,7 +30,7 @@ if (!isset($_SESSION['username'])) {
 						<li><a class="dropdown-item" href="mysql.php">Base de Datos</a></li>
 						<li><a class="dropdown-item" href="settings.php">CSS</a></li>
 						<li><a class="dropdown-item" href="bot_discord.php">BOT Discord</a></li>
-                        <li><a class="dropdown-item" href="edit_config.php?file=mtaserver.conf">mtaserver.conf</a></li>
+                        <li><a class="dropdown-item" href="edit_config.php?file=mtaserver.conf">mtaserver.conf</a></
                         <li><a class="dropdown-item" href="edit_config.php?file=local.conf">local.conf</a></li>
                         <li><a class="dropdown-item" href="edit_config.php?file=editor.conf">editor.conf</a></li>
                     </ul>
