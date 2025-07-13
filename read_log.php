@@ -1,5 +1,5 @@
 <?php
-$logFile = "C:\\Games\\mta\\mods\\deathmatch\\logs\\server.log";
+$logFile = "Z:\\Servidores\\mta\\mods\\deathmatch\\logs\\server.log";
 
 if (file_exists($logFile)) {
     $lines = file($logFile);

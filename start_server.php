@@ -1,7 +1,7 @@
 <?php
 header("Content-Type: text/plain");
 
-$serverPath = "C:\\Games\\mta\\MTA Server.exe";
+$serverPath = "Z:\\Servidores\\mta\\MTA Server.exe";
 
 if (file_exists($serverPath)) {
     $command = "start \"\" \"$serverPath\"";

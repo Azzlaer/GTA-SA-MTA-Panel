@@ -1,90 +1,88 @@
 <?php
-session_start();
-if (!isset($_SESSION['username'])) {
-    header("Location: index.php");
-    exit();
-}
-include 'db.php';
+include 'header.php';
+$db = new SQLite3('Z:\Servidores\mta\mods\deathmatch\internal.db');
 
-function getServerInfo()
-{
-    $data = [];
-    $data['Sistema Operativo'] = php_uname();
-    $data['Cantidad de Procesadores'] = getenv("NUMBER_OF_PROCESSORS") ?: "No disponible";
+// Usuarios más activos
+$activos = $db->query("SELECT userid, COUNT(*) AS logins FROM serialusage GROUP BY userid ORDER BY logins DESC LIMIT 10");
 
-    // Obtener memoria total en GB para Windows
-    $total_memory = shell_exec("wmic computersystem get TotalPhysicalMemory");
-    preg_match('/[0-9]+/', $total_memory, $matches);
-    if (isset($matches[0])) {
-        $total_memory = round((float)$matches[0] / 1024 / 1024 / 1024, 2);
-        $data['Memoria RAM Total'] = $total_memory . ' GB';
-    } else {
-        $data['Memoria RAM Total'] = 'No disponible';
-    }
+// Nuevas cuentas
+$nuevos = $db->querySingle("SELECT COUNT(*) FROM accounts WHERE id > 0");
 
-    // Obtener memoria libre en KB y convertir a GB para Windows
-    $free_memory = shell_exec("wmic OS get FreePhysicalMemory");
-    preg_match('/[0-9]+/', $free_memory, $matches);
-    if (isset($matches[0])) {
-        $free_memory = round((float)$matches[0] / 1024 / 1024, 2);
-        $used_memory = $total_memory - $free_memory;
-        $data['Memoria Usada'] = $used_memory . ' GB';
-    } else {
-        $data['Memoria Usada'] = 'No disponible';
-    }
-
-    // Obtener cantidad de procesos abiertos
-    $process_count = shell_exec("wmic process get Name | find /c /v \"\"");
-    $data['Cantidad de Procesos Abiertos'] = trim($process_count) ?: "No disponible";
-
-    $disk_total = round(disk_total_space("C:") / 1024 / 1024 / 1024, 2) . ' GB';
-    $disk_free = round(disk_free_space("C:") / 1024 / 1024 / 1024, 2) . ' GB';
-    $data['Espacio en Disco'] = "$disk_free / $disk_total";
-
-    global $conn;
-    $result = $conn->query("SELECT VERSION() AS mysql_version");
-    $row = $result->fetch_assoc();
-    $data['Versión MySQL'] = $row['mysql_version'];
-
-    $data['Versión Apache'] = $_SERVER['SERVER_SOFTWARE'];
-
-    return $data;
+// Número de bans
+$banlistCount = 0;
+if (file_exists("Z:\Servidores\mta\mods\deathmatch\banlist.xml")) {
+    $banlist = simplexml_load_file("Z:\Servidores\mta\mods\deathmatch\banlist.xml");
+    $banlistCount = count($banlist->ban);
 }
 
-$serverInfo = getServerInfo();
+// Tiempo promedio conexión
+$promedio = $db->query("SELECT AVG(last_login_date - added_date) AS promedio FROM serialusage WHERE last_login_date > added_date");
+$tiempoPromedio = round($promedio->fetchArray(SQLITE3_ASSOC)['promedio'] / 60); // minutos
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estadísticas del Servidor</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Estadísticas del Servidor</h2>
-    <table class="table table-striped table-bordered">
-        <thead class="table-dark">
-        <tr>
-            <th>Descripción</th>
-            <th>Información</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($serverInfo as $key => $value): ?>
-            <tr>
-                <td><?php echo htmlspecialchars($key); ?></td>
-                <td><?php echo htmlspecialchars($value); ?></td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
-    <div class="text-center">
-        <a href="dashboard.php" class="btn btn-primary">Volver al Dashboard</a>
+<div class="container py-4">
+    <h2 class="text-center text-white mb-4">📊 Panel de Estadísticas - Servidor MTA</h2>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-secondary shadow rounded">
+                <div class="card-body text-center">
+                    <h5 class="card-title">⛔ Usuarios Baneados</h5>
+                    <p class="display-5 fw-bold"><?= $banlistCount ?></p>
+                    <small class="text-light">Desde archivo banlist.xml</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success shadow rounded">
+                <div class="card-body text-center">
+                    <h5 class="card-title">🧍‍♂️ Cuentas Registradas</h5>
+                    <p class="display-5 fw-bold"><?= $nuevos ?></p>
+                    <small class="text-light">Actualmente en base de datos</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow rounded">
+                <div class="card-body text-center">
+                    <h5 class="card-title">⏱ Tiempo Promedio</h5>
+                    <p class="display-5 fw-bold"><?= $tiempoPromedio ?> min</p>
+                    <small class="text-light">Entre conexión y última sesión</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-dark text-white border border-secondary mt-5 shadow">
+        <div class="card-header fw-bold fs-5">👥 Usuarios Más Activos</div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover table-sm mb-0">
+                    <thead class="table-light text-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>ID Usuario</th>
+                            <th>Conexiones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $i = 1; while ($row = $activos->fetchArray(SQLITE3_ASSOC)): ?>
+                        <tr>
+                            <td><?= $i++ ?></td>
+                            <td><?= htmlspecialchars($row['userid']) ?></td>
+                            <td><?= $row['logins'] ?></td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-end mt-4">
+        <a href="exportar_estadisticas.php?formato=csv" class="btn btn-outline-light me-2">📥 Exportar CSV</a>
+        <a href="exportar_estadisticas.php?formato=json" class="btn btn-outline-warning">📤 Exportar JSON</a>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+
+<?php include 'footer.php'; ?>

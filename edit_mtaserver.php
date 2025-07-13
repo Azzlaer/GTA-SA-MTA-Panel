@@ -5,7 +5,7 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-$mtaserverFile = "C:\\Games\\mta\\mods\\deathmatch\\mtaserver.conf";
+$mtaserverFile = "Z:\\Servidores\\mta\\mods\\deathmatch\\mtaserver.conf";
 
 if (!file_exists($mtaserverFile)) {
     die("<div class='alert alert-danger'>Error: mtaserver.conf no encontrado. Verifique la ubicación.</div>");

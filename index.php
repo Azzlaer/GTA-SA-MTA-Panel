@@ -88,8 +88,16 @@ $background_file = $config['background_file'] ?? 'background.jpg';
             <input type="password" class="form-control" id="login-password" name="password" required>
         </div>
         <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+		<?php if (isset($_GET['logout'])): ?>
+    <div class="alert alert-success" role="alert">
+        Has cerrado sesión correctamente.
+    </div>
+<?php endif; ?>
     </form>
 </div>
+
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

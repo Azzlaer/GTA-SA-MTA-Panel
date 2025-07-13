@@ -115,5 +115,4 @@ ftp_close($ftp_conn);
         </table>
     </div>
 </body>
-<?php include 'footer.php';  // cierra body, html, y scripts globales ?>
 </html>

@@ -37,7 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
                 if (password_verify($password, $row['password'])) {
+                    // ✅ Guardar ID y username en sesión
+                    $_SESSION['user_id'] = $row['id'];
                     $_SESSION['username'] = $row['username'];
+
                     header("Location: dashboard.php");
                     exit();
                 } else {

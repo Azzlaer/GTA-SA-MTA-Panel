@@ -9,7 +9,7 @@ if (!isset($_GET['file'])) {
     die("Archivo no especificado.");
 }
 
-$basePath = "C:\\Games\\mta\\mods\\deathmatch\\";
+$basePath = "Z:\\Servidores\\mta\\mods\\deathmatch\\";
 $allowedFiles = ["mtaserver.conf", "local.conf", "editor.conf"];
 $fileName = basename($_GET['file']);
 
@@ -49,4 +49,5 @@ $content = file_exists($filePath) ? file_get_contents($filePath) : "No se pudo c
         </form>
     </div>
 </body>
+<?php include 'footer.php';  // cierra body, html, y scripts globales ?>
 </html>

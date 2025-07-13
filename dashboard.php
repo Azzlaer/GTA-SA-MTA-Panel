@@ -11,7 +11,7 @@ function isProcessRunning($processName) {
 }
 
 if (isset($_POST['start_server'])) {
-    pclose(popen("start /B C:\\Games\\mta\\MTA Server.exe", "r"));
+    pclose(popen("start /B Z:\\Servidores\\mta\\MTA Server.exe", "r"));
 }
 
 if (isset($_POST['stop_server'])) {
@@ -19,6 +19,10 @@ if (isset($_POST['stop_server'])) {
 }
 
 $server_status = isProcessRunning("MTA Server.exe") ? "Online" : "Offline";
+
+
+include 'header.php'
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,10 +33,6 @@ $server_status = isProcessRunning("MTA Server.exe") ? "Online" : "Offline";
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<?php
-include 'header.php'
-?>
-
 <body>
     <div class="container mt-5">
         <h1 class="text-center">MTA Server Dashboard</h1>
@@ -55,7 +55,7 @@ include 'header.php'
     });
 </script>
 
-                    <button type="submit" name="stop_server" class="btn btn-danger">Detener Servidor</button>
+                    <button type="submit" name="stop_server" class="btn btn-danger">Terminar Servidor</button>
                     <button type="button" onclick="checkServerStatus()" class="btn btn-primary">Actualizar Estado</button>
                 </form>
             </div>
@@ -91,4 +91,5 @@ include 'header.php'
         });
     </script>
 </body>
+<?php include 'footer.php';  // cierra body, html, y scripts globales ?>
 </html>

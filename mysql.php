@@ -85,4 +85,5 @@ $portStatusClass = ($portStatus === "Online") ? "bg-success" : "bg-danger";
         </form>
     </div>
 </body>
+<?php include 'footer.php';  // cierra body, html, y scripts globales ?>
 </html>

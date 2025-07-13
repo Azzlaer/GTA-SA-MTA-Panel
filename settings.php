@@ -161,4 +161,5 @@ $videos = array_filter($files, fn($file) => preg_match('/\.(mp4)$/i', $file));
         </form>
     </div>
 </body>
+<?php include 'footer.php';  // cierra body, html, y scripts globales ?>
 </html>
