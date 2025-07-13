@@ -1,107 +1,115 @@
-# Proyecto: Gestor FTP Online y Administrador de Servidor MTA
+# 🎮 MTA Server Manager Panel PRO
 
-## Descripción
-Este proyecto es un **gestor FTP online** con funcionalidades avanzadas y un **administrador de servidor MTA**, permitiendo a los usuarios:
+Panel web moderno y responsivo para administrar un servidor MTA (Multi Theft Auto). Incluye múltiples herramientas útiles, control de cuentas, sistema de roles, carga de archivos y más, todo en un entorno seguro y visualmente profesional.
 
-- **Gestión de archivos vía FTP** (subir, eliminar, renombrar, editar archivos de texto y navegar entre carpetas).
-- **Administración del servidor MTA** (iniciar, detener el servidor, ver logs en tiempo real y enviar eventos a Discord).
-- **Configuración de fondo dinámico** (cambiar entre imagen o video como fondo de la web).
-- **Monitorización de MySQL** (ver estado y credenciales de conexión).
+## 📦 Características Principales
 
-## Tecnologías Utilizadas
-- **PHP 8.2** (Backend y gestión del servidor FTP/MTA)
-- **Bootstrap 5.1** (Interfaz responsiva y moderna)
-- **MySQL** (Gestión de datos del sistema y usuarios)
-- **Python** (Monitor de logs de MTA y webhook de Discord)
-- **FTP** (Manejo de archivos en servidores remotos)
-- **XAMPP en Windows Server 2022**
-
----
-
-## Instalación y Configuración
-### 1️⃣ Requisitos Previos
-- **Servidor Web Apache** con PHP 8.2 (Recomendado XAMPP en Windows Server 2022).
-- **Servidor MySQL en localhost**.
-- **Servidor FTP activo y accesible**.
-- **Servidor MTA:SA configurado** en `C:/Games/mta/`.
-
-### 2️⃣ Clonar el Repositorio
-```bash
-git clone https://github.com/tu-usuario/tu-repositorio.git
-cd tu-repositorio
-```
-
-### 3️⃣ Configurar Base de Datos
-Ejecuta las siguientes **queries SQL** en tu servidor MySQL:
-```sql
-CREATE DATABASE latinbat_mta;
-USE latinbat_mta;
-
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    password VARCHAR(255) NOT NULL
-);
-```
-Edita el archivo **db.php** con las credenciales correctas:
-```php
-$servername = "localhost";
-$username = "mta";
-$password = "yi[JHe*r4Kton*!M";
-$dbname = "latinbat_mta";
-$port = 3306;
-```
-
-### 4️⃣ Configurar FTP
-Edita el archivo **ftp_manager.php** con las credenciales de tu servidor FTP:
-```php
-$ftp_server = "tu-servidor-ftp.com";
-$ftp_user = "usuario_ftp";
-$ftp_pass = "contraseña_ftp";
-```
-
-### 5️⃣ Configurar Monitor de Logs y Discord Bot
-Modifica **config_discord.ini**:
-```ini
-[SETTINGS]
-discord_webhook="https://discord.com/api/webhooks/TU_WEBHOOK"
-server_start="Servidor iniciado!"
-server_join="El jugador {PLAYER} ({IP}) ha ingresado."
-server_leave="El jugador {PLAYER} ha salido."
-server_chat="{PLAYER}: {MESSAGE}"
-```
-Ejecuta el **script Python** para monitorear logs:
-```bash
-python mta_log_monitor.py
-```
+- ✅ **Login seguro** con sesiones PHP.
+- 📁 **Gestor de archivos ZIP/RAR** con barra de progreso y opciones de extracción/eliminación.
+- 👥 **Gestión de usuarios MTA** (SQLite) desde el panel web.
+- 🎮 **Asignación de roles y grupos ACL** editando `acl.xml`.
+- 📈 **Gráficas de jugadores** con Chart.js.
+- ⚙️ **Modo mantenimiento** para bloquear funciones temporalmente.
+- 🌓 **Interruptor de modo claro/oscuro**.
+- 🔐 **Soporte multiusuario con roles**: admin, moderador, visitante.
+- 🔔 **Notificaciones en tiempo real** (simuladas y ampliables).
+- 🌐 **Diseño con Bootstrap 5 + Bootstrap Icons**.
+- 🧩 **Separación de opciones MTA y herramientas generales**.
 
 ---
 
-## Funcionalidades
-### 📂 Gestor FTP Online
-✅ Navegar entre carpetas 🚀  
-✅ Subir archivos 📤  
-✅ Descargar archivos 📥  
-✅ Eliminar y renombrar archivos/carpeta 🗑️  
-✅ Editar archivos de texto en línea ✍️
+## 📁 Estructura del Proyecto
 
-### 🎮 Administrador de Servidor MTA
-✅ Iniciar y detener el servidor 🟢🔴  
-✅ Monitorear logs en tiempo real 📜  
-✅ Enviar eventos a Discord 📢  
-✅ Configuración de archivos MTA en línea ⚙️
+📂 mta/
+├── dashboard.php
+├── login.php
+├── logout.php
+├── users.php
+├── crear_cuenta.php
+├── roles.php
+├── upload_manager.php
+├── includes/
+│ ├── accounts_sqlite.class.php
+│ └── header.php
+├── mods/
+│ └── deathmatch/
+│ └── acl.xml
+├── config/
+│ └── config_discord.ini
+├── scripts/
+│ └── mta_log_monitor.py
+├── Z:/Servidores/mta/ (directorio de trabajo principal)
 
-### 🖼️ Configuración de Fondo de Pantalla
-✅ Seleccionar entre **imagen o video** como fondo 🎬  
-✅ Subir nuevos fondos y previsualizarlos 🌄
-
-### 💾 Monitorización de MySQL
-✅ Ver estado de conexión MySQL ✅  
-✅ Mostrar credenciales de base de datos 🔐
+yaml
+Copiar
+Editar
 
 ---
 
-## 📌 Créditos y Contacto
-Desarrollado por **[Azzlaer]** | GitHub: [Tu Repositorio](https://github.com/Azzlaer) 🚀
+## ⚙️ Requisitos
 
-Si tienes dudas o sugerencias, ¡abre un issue o contáctame! 😊
+- ✅ Servidor web local con PHP (XAMPP recomendado)
+- ✅ PHP 7.4 o superior
+- ✅ SQLite3 activado
+- ✅ Bootstrap 5
+- ✅ Chart.js
+- ✅ Python 3 (solo para script de monitoreo opcional)
+- ✅ Acceso al archivo `acl.xml` del servidor MTA
+
+---
+
+## 🛠️ Instalación
+
+1. Clona este repositorio:
+git clone https://github.com/tuusuario/mta-panel-pro.git
+
+Abre XAMPP y activa Apache y SQLite.
+Coloca el proyecto en htdocs.
+Configura el archivo config_discord.ini si deseas monitoreo con Discord.
+Ejecuta mta_log_monitor.py si necesitas notificaciones automáticas desde el log.
+
+📤 Gestor de Archivos ZIP/RAR
+Sube un archivo comprimido y realiza las siguientes acciones:
+
+✔️ Extraer contenido
+
+🗑️ Eliminar todo el directorio Z:/Servidores/mta/
+
+❌ Borrar el archivo subido
+
+Incluye barra de progreso de carga (AJAX).
+
+🛡️ Roles y ACL
+Edita acl.xml gráficamente desde el panel.
+
+Asigna grupos a usuarios (ej. Admin, Moderator, etc.)
+
+Verifica integridad del XML automáticamente.
+
+🖥️ Scripts Python
+Incluye un script para monitorear el log del servidor MTA y enviar mensajes a Discord vía webhook cuando:
+
+🔄 El servidor inicia
+
+🧑 Un jugador entra o sale
+
+💬 Un jugador envía un mensaje por chat
+
+👤 Multiusuario
+Registro y login de usuarios
+
+Restricción de acceso según el rol
+
+Visualización de quién está logueado
+
+🧪 Modo Mantenimiento
+Coloca un archivo llamado maintenance.lock en el directorio raíz para activar el modo mantenimiento. Se mostrará una alerta en el panel y se desactivarán ciertas funciones.
+
+📸 Capturas (opcional)
+Agrega aquí capturas de pantalla para mostrar el dashboard, el gráfico de actividad, o el formulario de roles.
+
+📄 Licencia
+Este proyecto está bajo la licencia MIT.
+
+🙌 Agradecimientos
+Gracias a la comunidad MTA por su documentación y a Bootstrap, Chart.js, y todos los que colaboraron en este proyecto.
