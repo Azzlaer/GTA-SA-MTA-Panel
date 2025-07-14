@@ -1,3 +1,4 @@
+
 # 🎮 MTA Server Manager Panel PRO
 
 Panel web moderno y responsivo para administrar un servidor MTA (Multi Theft Auto). Incluye múltiples herramientas útiles, control de cuentas, sistema de roles, carga de archivos y más, todo en un entorno seguro y visualmente profesional.
@@ -20,6 +21,7 @@ Panel web moderno y responsivo para administrar un servidor MTA (Multi Theft Aut
 
 ## 📁 Estructura del Proyecto
 
+```
 📂 mta/
 ├── dashboard.php
 ├── login.php
@@ -29,20 +31,17 @@ Panel web moderno y responsivo para administrar un servidor MTA (Multi Theft Aut
 ├── roles.php
 ├── upload_manager.php
 ├── includes/
-│ ├── accounts_sqlite.class.php
-│ └── header.php
+│   ├── accounts_sqlite.class.php
+│   └── header.php
 ├── mods/
-│ └── deathmatch/
-│ └── acl.xml
+│   └── deathmatch/
+│       └── acl.xml
 ├── config/
-│ └── config_discord.ini
+│   └── config_discord.ini
 ├── scripts/
-│ └── mta_log_monitor.py
+│   └── mta_log_monitor.py
 ├── Z:/Servidores/mta/ (directorio de trabajo principal)
-
-yaml
-Copiar
-Editar
+```
 
 ---
 
@@ -61,55 +60,68 @@ Editar
 ## 🛠️ Instalación
 
 1. Clona este repositorio:
+
+```bash
 git clone https://github.com/tuusuario/mta-panel-pro.git
+```
 
-Abre XAMPP y activa Apache y SQLite.
-Coloca el proyecto en htdocs.
-Configura el archivo config_discord.ini si deseas monitoreo con Discord.
-Ejecuta mta_log_monitor.py si necesitas notificaciones automáticas desde el log.
+2. Abre XAMPP y activa **Apache** y **SQLite**.
+3. Coloca el proyecto en `htdocs`.
+4. Configura el archivo `config_discord.ini` si deseas monitoreo con Discord.
+5. Ejecuta `mta_log_monitor.py` si necesitas notificaciones automáticas desde el log.
 
-📤 Gestor de Archivos ZIP/RAR
+---
+
+## 📤 Gestor de Archivos ZIP/RAR
+
 Sube un archivo comprimido y realiza las siguientes acciones:
 
-✔️ Extraer contenido
-
-🗑️ Eliminar todo el directorio Z:/Servidores/mta/
-
-❌ Borrar el archivo subido
+- ✔️ Extraer contenido
+- 🗑️ Eliminar todo el directorio `Z:/Servidores/mta/`
+- ❌ Borrar el archivo subido
 
 Incluye barra de progreso de carga (AJAX).
 
-🛡️ Roles y ACL
-Edita acl.xml gráficamente desde el panel.
+---
 
-Asigna grupos a usuarios (ej. Admin, Moderator, etc.)
+## 🛡️ Roles y ACL
 
-Verifica integridad del XML automáticamente.
+- Edita `acl.xml` gráficamente desde el panel.
+- Asigna grupos a usuarios (ej. `Admin`, `Moderator`, etc.)
+- Verifica integridad del XML automáticamente.
 
-🖥️ Scripts Python
+---
+
+## 🖥️ Scripts Python
+
 Incluye un script para monitorear el log del servidor MTA y enviar mensajes a Discord vía webhook cuando:
 
-🔄 El servidor inicia
+- 🔄 El servidor inicia
+- 🧑 Un jugador entra o sale
+- 💬 Un jugador envía un mensaje por chat
 
-🧑 Un jugador entra o sale
+---
 
-💬 Un jugador envía un mensaje por chat
+## 👤 Multiusuario
 
-👤 Multiusuario
-Registro y login de usuarios
+- Registro y login de usuarios
+- Restricción de acceso según el rol
+- Visualización de quién está logueado
 
-Restricción de acceso según el rol
+---
 
-Visualización de quién está logueado
+## 🧪 Modo Mantenimiento
 
-🧪 Modo Mantenimiento
-Coloca un archivo llamado maintenance.lock en el directorio raíz para activar el modo mantenimiento. Se mostrará una alerta en el panel y se desactivarán ciertas funciones.
+Coloca un archivo llamado `maintenance.lock` en el directorio raíz para activar el modo mantenimiento. Se mostrará una alerta en el panel y se desactivarán ciertas funciones.
 
-📸 Capturas (opcional)
-Agrega aquí capturas de pantalla para mostrar el dashboard, el gráfico de actividad, o el formulario de roles.
+---
 
-📄 Licencia
+## 📄 Licencia
+
 Este proyecto está bajo la licencia MIT.
 
-🙌 Agradecimientos
+---
+
+## 🙌 Agradecimientos
+
 Gracias a la comunidad MTA por su documentación y a Bootstrap, Chart.js, y todos los que colaboraron en este proyecto.
