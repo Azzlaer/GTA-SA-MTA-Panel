@@ -19,9 +19,10 @@ if (!isset($_SESSION['username'])) {
 </head>
 <body class="bg-dark text-light">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary shadow-sm">
   <div class="container">
-    <a class="navbar-brand fw-bold" href="dashboard.php">🚀 MTA Server Manager
+    <a class="navbar-brand fw-bold" href="dashboard.php">
+      🚀 MTA Server Manager
       <?php if (isset($_SESSION['username'])): ?>
         <span class="badge bg-secondary ms-2">👤 <?= htmlspecialchars($_SESSION['username']) ?></span>
       <?php endif; ?>
@@ -39,35 +40,34 @@ if (!isset($_SESSION['username'])) {
           <a class="nav-link" href="dashboard.php">🏠 Dashboard</a>
         </li>
 
-        <!-- Menú general -->
+        <!-- Herramientas generales -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="generalDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            ⚙️ Herramientas
+            🛠️ Herramientas
           </a>
           <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="generalDropdown">
             <li><a class="dropdown-item" href="ftp_manager.php">📁 FTP Manager</a></li>
-			<li><a class="dropdown-item" href="register.php">👥 Account Manager</a></li>
+            <li><a class="dropdown-item" href="register.php">📝 Account Manager</a></li>
             <li><a class="dropdown-item" href="gestionar_usuarios.php">👥 User Manager</a></li>
-            <li><a class="dropdown-item" href="informacion.php">📄 Información</a></li>
+            <li><a class="dropdown-item" href="informacion.php">ℹ️ Información</a></li>
             <li><a class="dropdown-item" href="estadisticas.php">📊 Estadísticas</a></li>
             <li><a class="dropdown-item" href="mysql.php">🗃️ Base de Datos</a></li>
-            <li><a class="dropdown-item" href="settings.php">🎨 CSS</a></li>
-            <li><a class="dropdown-item" href="bot_discord.php">🤖 BOT Discord</a></li>
+            <li><a class="dropdown-item" href="settings.php">🎨 Estilos CSS</a></li>
+            <li><a class="dropdown-item" href="bot_discord.php">🤖 Bot de Discord</a></li>
           </ul>
         </li>
 
-        <!-- Menú MTA -->
+        <!-- Herramientas MTA -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="mtaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            🧩 MTA Tools
+            🎮 MTA Tools
           </a>
           <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="mtaDropdown">
-            <li><a class="dropdown-item" href="server_install.php">Install Server</a></li>
-			<li><a class="dropdown-item" href="roles.php">👤 Roles</a></li>
-			<li><a class="dropdown-item" href="users.php">👤 Usuarios</a></li>
+            <li><a class="dropdown-item" href="roles.php">👑 Roles</a></li>
+            <li><a class="dropdown-item" href="users.php">👤 Usuarios</a></li>
             <li><a class="dropdown-item" href="crear_cuenta.php">➕ Crear Cuenta</a></li>
-            <li><a class="dropdown-item" href="banlist.php">🚫 Baneados</a></li>
-            <li><a class="dropdown-item" href="edit_settings.php">⚙️ Configuración</a></li>
+            <li><a class="dropdown-item" href="banlist.php">🚫 Lista de Baneados</a></li>
+            <li><a class="dropdown-item" href="edit_settings.php">⚙️ Configuración del Servidor</a></li>
             <li><a class="dropdown-item" href="rcon_panel.php">🖥️ RCON Panel</a></li>
             <li><a class="dropdown-item" href="edit_config.php?file=mtaserver.conf">🧾 mtaserver.conf</a></li>
             <li><a class="dropdown-item" href="edit_config.php?file=local.conf">📄 local.conf</a></li>
@@ -76,9 +76,23 @@ if (!isset($_SESSION['username'])) {
           </ul>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link text-danger fw-bold" href="logout.php">🔓 Cerrar Sesión</a>
+        <!-- Archivos -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="fileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            📦 Archivos
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="fileDropdown">
+            <li><a class="dropdown-item" href="descomprimir.php">📂 Instalación por Defecto</a></li>
+            <li><a class="dropdown-item" href="server_install.php">📤 Subir e Instalar</a></li>
+            <li><a class="dropdown-item" href="vaciar_mta.php">🧨 Eliminar Todo</a></li>
+          </ul>
         </li>
+
+        <!-- Cierre de sesión -->
+        <li class="nav-item">
+          <a class="nav-link text-danger fw-bold" href="logout.php">🔒 Cerrar Sesión</a>
+        </li>
+
       </ul>
     </div>
   </div>

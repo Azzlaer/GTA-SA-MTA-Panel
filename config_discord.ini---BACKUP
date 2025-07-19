@@ -1,6 +1,0 @@
-[SETTINGS]
-discord_webhook=https://discord.com/api/webhooks/1345936498389946469/_gzVyeloAOWFdO9Q-6S6fgJ4AJSekeTdn5a73NbIUS4mqhgYgkGtS45C7667Ig6hPA8y
-server_start="📢 SERVIDOR ONLINE"
-server_join="✅ El jugador {PLAYER} ({IP}) ha ingresado al servidor"
-server_leave="❌ El jugador {PLAYER} ha salido del servidor"
-server_chat="💬 {PLAYER}: {MESSAGE}"
